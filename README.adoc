@@ -14,10 +14,10 @@ endif::[]
 :Fedora: https://getfedora.org/[Fedora]
 :Fedora-Silverblue: https://silverblue.fedoraproject.org/[Fedora Silverblue]
 :fish: https://fishshell.com/[fish]
+:GDB: https://www.gnu.org/software/gdb/[GDB]
 :Git: https://git-scm.com/[Git]
 :OpenSSH: https://www.openssh.com/[OpenSSH]
 :pre-commit: https://pre-commit.com/[pre-commit]
-:GDB: https://www.gnu.org/software/gdb/[GDB]
 :Podman: https://podman.io/[Podman]
 
 image:https://img.shields.io/github/workflow/status/jwillikers/gdb-image/CI/main[GitHub Workflow Status]
@@ -66,9 +66,9 @@ podman run \
     --group-add keep-groups \
     --security-opt label=disable \
     --device /dev/ttyBmpGdb \
-    --volume $PWD:/home/user:Z
+    --volume $PWD:/home/user:Z \
     --name gdb \
-    -it quay.io/jwillikers/gdb:latest
+    -it quay.io/jwillikers/gdb:latest \
     my-executable.elf
 ----
 
