@@ -1,0 +1,176 @@
+= GDB Image
+Jordan Williams <jordan@jwillikers.com>
+:experimental:
+:icons: font
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:Black-Magic-Probe: https://github.com/blacksphere/blackmagic/wiki[Black Magic Probe]
+:Buildah: https://buildah.io/[Buildah]
+:Fedora: https://getfedora.org/[Fedora]
+:Fedora-Silverblue: https://silverblue.fedoraproject.org/[Fedora Silverblue]
+:fish: https://fishshell.com/[fish]
+:Git: https://git-scm.com/[Git]
+:OpenSSH: https://www.openssh.com/[OpenSSH]
+:pre-commit: https://pre-commit.com/[pre-commit]
+:GDB: https://www.gnu.org/software/gdb/[GDB]
+:Podman: https://podman.io/[Podman]
+
+image:https://img.shields.io/github/workflow/status/jwillikers/gdb-image/CI/main[GitHub Workflow Status]
+image:https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white[pre-commit, link=https://github.com/pre-commit/pre-commit]
+
+A container image for {GDB}.
+This project uses GDB as packaged for {Fedora} which supports targeting various architectures.
+
+== Synopsis
+
+Image:: https://quay.io/repository/jwillikers/gdb[quay.io/jwillikers/gdb]
+
+Tags::
+* `latest`
+
+Supported architectures::
+* `amd64` _(x86_64)_
+* `arm` _(armhfp)_
+* `arm64` _(aarch64)_
+
+User:: The default user inside the container is named `user`.
+
+Entrypoint:: `gdb`
+
+Labels::
+`io.containers.autoupdate=registry`::: Enables automatic updates when using Podman and the _fully-qualified_ image name.
+
+== Quick Start
+
+To access serial devices such as the {Black-Magic-Probe}, ensure your user is in the `dialout` group.
+
+[source,sh]
+----
+sudo usermod -aG $USER dialout
+----
+
+NOTE: You'll have to log out and back in for the changes to take effect.
+
+To connect to a serial console using GDB from within this container, use the following {Podman} command.
+This command gives GDB access to the serial console device `/dev/ttyBmpGdb`.
+
+[source,sh]
+----
+podman run \
+    --rm \
+    --group-add keep-groups \
+    --security-opt label=disable \
+    --device /dev/ttyBmpGdb \
+    --volume $PWD:/home/user:Z
+    --name gdb \
+    -it quay.io/jwillikers/gdb:latest
+    my-executable.elf
+----
+
+== Build
+
+This project uses {Buildah} and {Podman} for building and testing the image.
+A set of {pre-commit} checks are readily available to ensure your code is up-to-spec at the time it is committed.
+Instructions for setting up a development environment, building the image, and testing the image follow.
+These instructions are intended for users of {Fedora-Silverblue}, where the packages `buildah`, `git`, and `podman` are already available.
+Moreover, I use the {fish} shell.
+
+. Install the {fish} shell.
++
+[source,sh]
+----
+sudo rpm-ostree install fish
+----
+
+. Reboot to finish the installation.
++
+[source,sh]
+----
+systemctl reboot
+----
+
+. Clone this repository.
++
+[source,sh]
+----
+git -C ~/Projects clone git@github.com:jwillikers/gdb-image.git
+----
+
+. Install {pre-commit}.
++
+[source,sh]
+----
+pip install pre-commit
+----
+
+. Change into the project directory.
++
+[source,sh]
+----
+cd ~/Projects/gdb-image
+----
+
+. Install pre-commit's Git hooks.
++
+[source,sh]
+----
+pre-commit install
+----
+
+. Run the shell script to build the image.
++
+[source,sh]
+----
+buildah unshare ~/Projects/gdb-image/build.fish
+----
+
+. Test the image with the `test.fish` shell script.
++
+[source,sh]
+----
+~/Projects/gdb-image/test.fish
+----
+
+== Contributing
+
+Contributions in the form of issues, feedback, and even pull requests are welcome.
+Make sure to adhere to the project's link:CODE_OF_CONDUCT.adoc[Code of Conduct].
+
+== Open Source Software
+
+This project is built on the hard work of countless open source contributors.
+Several of these projects are enumerated below.
+
+* https://asciidoctor.org/[Asciidoctor]
+* {Buildah}
+* {Fedora}
+* {Fedora-Silverblue}
+* {fish}
+* {GDB}
+* {Git}
+* https://www.linuxfoundation.org/[Linux]
+* {OpenSSH}
+* {Podman}
+* {pre-commit}
+* https://www.python.org/[Python]
+* https://rouge.jneen.net/[Rouge]
+* https://www.ruby-lang.org/en/[Ruby]
+
+== Code of Conduct
+
+Refer to the project's link:CODE_OF_CONDUCT.adoc[Code of Conduct] for details.
+
+== License
+
+This repository is licensed under the https://www.gnu.org/licenses/gpl-3.0.html[GPLv3], a copy of which is provided in the link:LICENSE.adoc[license file].
+
+© 2021 Jordan Williams
+
+== Authors
+
+mailto:{email}[{author}]
