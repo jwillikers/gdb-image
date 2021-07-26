@@ -65,7 +65,7 @@ podman run \
     --rm \
     --group-add keep-groups \
     --security-opt label=disable \
-    --device /dev/ttyBmpGdb \
+    --device /dev/ttyBmpGdb:/dev/ttyBmpGdb \
     --volume $PWD:/home/user:Z \
     --name gdb \
     -it quay.io/jwillikers/gdb:latest \
